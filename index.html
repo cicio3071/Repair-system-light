@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大湖農工｜設備組維修紀錄</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base:        #f5f3ef;
+            --bg-panel:       #ffffff;
+            --bg-input:       #f8f7f4;
+            --bg-input-focus: #ffffff;
+            --border:         #ddd9d0;
+            --border-mid:     #c8c3b8;
+            --border-dark:    #a89f90;
+            --text-primary:   #1e1c18;
+            --text-secondary: #4a4640;
+            --text-muted:     #8c867c;
+            --text-label:     #6b6560;
+            --accent:         #2a5fa5;
+            --accent-light:   #e8eff9;
+            --accent-hover:   #1e4d8c;
+            --green:          #2d7a4a;
+            --green-bg:       #eaf4ee;
+            --yellow:         #8a6c00;
+            --yellow-bg:      #fdf6e0;
+            --orange:         #b55a00;
+            --orange-bg:      #fef0e3;
+            --red:            #c0392b;
+            --red-bg:         #fdecea;
+            --purple:         #6d3fc0;
+            --purple-bg:      #f0eaf8;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+            --mono:  'JetBrains Mono', monospace;
+            --sans:  'Noto Sans TC', sans-serif;
+            --serif: 'Noto Serif TC', serif;
+            --radius-sm: 4px; --radius: 8px; --radius-lg: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--sans); background: var(--bg-base); color: var(--text-primary); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+
+        /* TOPBAR */
+        .topbar { background: var(--bg-panel); border-bottom: 2px solid var(--accent); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
+        .topbar-brand { display: flex; align-items: center; gap: 0.875rem; }
+        .topbar-logo { width: 34px; height: 34px; background: var(--accent); border-radius: var(--radius-sm); display: grid; place-items: center; color: white; font-size: 14px; flex-shrink: 0; }
+        .topbar-name { font-family: var(--serif); font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; }
+        .topbar-name span { color: var(--accent); }
+        .topbar-sub { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.06em; margin-top: 1px; }
+        .topbar-clock { font-family: var(--mono); font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-input); padding: 0.3rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border); letter-spacing: 0.05em; }
+
+        /* LAYOUT */
+        .main-layout { max-width: 1300px; margin: 0 auto; padding: 1.75rem 1.5rem; display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start; }
+        @media (max-width: 960px) { .main-layout { grid-template-columns: 1fr; } }
+
+        /* STATS */
+        .stats-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+        @media (max-width: 800px) { .stats-row { grid-template-columns: repeat(3,1fr); } }
+        @media (max-width: 500px) { .stats-row { grid-template-columns: repeat(2,1fr); } }
+        .stat-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; display: flex; align-items: center; gap: 0.875rem; box-shadow: var(--shadow-sm); transition: box-shadow 0.2s; }
+        .stat-card:hover { box-shadow: var(--shadow-md); }
+        .stat-icon { width: 38px; height: 38px; border-radius: var(--radius-sm); display: grid; place-items: center; font-size: 0.95rem; flex-shrink: 0; }
+        .stat-icon.total   { background: var(--accent-light); color: var(--accent); }
+        .stat-icon.pending { background: var(--yellow-bg);    color: var(--yellow); }
+        .stat-icon.fixing  { background: var(--orange-bg);    color: var(--orange); }
+        .stat-icon.done    { background: var(--green-bg);     color: var(--green);  }
+        .stat-icon.month   { background: var(--purple-bg);    color: var(--purple); }
+        .stat-num { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; line-height: 1; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.04em; }
+
+        /* ANALYTICS */
+        .analytics-row { grid-column: 1 / -1; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; box-shadow: var(--shadow-sm); }
+        .analytics-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+        .analytics-title { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; }
+        .analytics-title i { color: var(--accent); }
+        .analytics-year-label { font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted); }
+        .chart-wrap { display: flex; gap: 0.6rem; align-items: flex-end; height: 110px; }
+        .chart-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+        .chart-bar-outer { width: 100%; background: var(--bg-input); border-radius: 3px 3px 0 0; height: 80px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+        .chart-bar-inner { width: 100%; position: absolute; bottom: 0; background: var(--accent); border-radius: 2px 2px 0 0; transition: height 0.5s ease; }
+        .chart-bar-inner.has-urgent { background: linear-gradient(to top, var(--red) 0%, var(--accent) 100%); }
+        .chart-bar-num { font-family: var(--mono); font-size: 0.65rem; color: var(--text-secondary); font-weight: 500; min-height: 1em; }
+        .chart-bar-label { font-size: 0.6rem; color: var(--text-muted); text-align: center; line-height: 1.3; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .chart-empty { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 2rem 0; }
+
+        /* PANEL */
+        .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); position: sticky; top: 72px; }
+        .panel-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--border); }
+        .panel-header-icon { color: var(--accent); font-size: 0.875rem; }
+        .panel-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); }
+
+        /* FORM */
+        .field { margin-bottom: 0.875rem; }
+        .field label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-label); margin-bottom: 0.35rem; }
+        .field label .required { color: var(--red); margin-left: 2px; }
+        .field input, .field select, .field textarea { width: 100%; background: var(--bg-input); border: 1px solid var(--border-mid); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--sans); font-size: 0.875rem; padding: 0.55rem 0.8rem; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; outline: none; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); background: var(--bg-input-focus); box-shadow: 0 0 0 3px rgba(42,95,165,0.1); }
+        .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); font-size: 0.82rem; }
+        .field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238c867c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; }
+        .field textarea { resize: vertical; min-height: 80px; line-height: 1.65; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+        .urgency-row { display: flex; gap: 0.5rem; }
+        .urgency-opt { flex: 1; }
+        .urgency-opt input[type="radio"] { display: none; }
+        .urgency-opt label { display: flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.5rem; border: 1px solid var(--border-mid); border-radius: var(--radius-sm); cursor: pointer; font-size: 0.8rem; font-weight: 500; background: var(--bg-input); color: var(--text-secondary); transition: all 0.15s; letter-spacing: 0; text-transform: none; margin-bottom: 0; }
+        .urgency-opt input:checked + label.normal-label { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+        .urgency-opt input:checked + label.urgent-label { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+        .char-counter { text-align: right; font-family: var(--mono); font-size: 0.63rem; color: var(--text-muted); margin-top: 3px; }
+        .char-counter.warn { color: var(--yellow); }
+        .char-counter.over { color: var(--red); }
+
+        .btn-submit { width: 100%; background: var(--accent); color: white; font-family: var(--sans); font-weight: 700; font-size: 0.875rem; letter-spacing: 0.04em; padding: 0.7rem; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.15s, box-shadow 0.15s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.75rem; }
+        .btn-submit:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(42,95,165,0.25); }
+        .btn-submit:active { transform: scale(0.99); }
+
+        /* RIGHT COL */
+        .right-col { min-width: 0; }
+        .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.875rem; gap: 0.75rem; flex-wrap: wrap; }
+        .list-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; }
+        .filter-tabs { display: flex; gap: 0.35rem; margin-bottom: 0.875rem; flex-wrap: wrap; }
+        .filter-tab { font-family: var(--mono); font-size: 0.68rem; padding: 0.28rem 0.65rem; border-radius: 99px; border: 1px solid var(--border-mid); background: var(--bg-panel); color: var(--text-muted); cursor: pointer; transition: all 0.15s; letter-spacing: 0.03em; }
+        .filter-tab:hover { background: var(--bg-base); color: var(--text-secondary); }
+        .filter-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .filter-tab.urgent-tab.active { background: var(--red); border-color: var(--red); }
+
+        .search-wrap { position: relative; }
+        .search-wrap i { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.72rem; pointer-events: none; }
+        .search-wrap input { background: var(--bg-panel); border: 1px solid var(--border-mid); border-radius: 99px; color: var(--text-primary); font-family: var(--sans); font-size: 0.8rem; padding: 0.38rem 0.75rem 0.38rem 1.9rem; outline: none; width: 180px; transition: border-color 0.15s, box-shadow 0.15s; }
+        .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,95,165,0.1); }
+        .search-wrap input::placeholder { color: var(--text-muted); }
+        .btn-export { background: var(--bg-panel); border: 1px solid var(--border-mid); border-radius: 99px; color: var(--text-secondary); font-size: 0.75rem; padding: 0.38rem 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.15s; white-space: nowrap; }
+        .btn-export:hover { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+
+        /* CARDS */
+        .repair-list { display: flex; flex-direction: column; gap: 0.75rem; }
+        .repair-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); border-left: 3px solid transparent; box-shadow: var(--shadow-sm); transition: box-shadow 0.2s, transform 0.15s; animation: slideUp 0.25s ease-out forwards; opacity: 0; overflow: hidden; }
+        @keyframes slideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .repair-card:hover { box-shadow: var(--shadow-md); }
+        .repair-card.status-pending   { border-left-color: var(--yellow); }
+        .repair-card.status-fixing    { border-left-color: var(--orange); }
+        .repair-card.status-completed { border-left-color: var(--green); }
+        .repair-card.is-urgent { box-shadow: 0 0 0 1.5px rgba(192,57,43,0.3), var(--shadow-sm); }
+
+        .urgent-banner { background: var(--red-bg); border-bottom: 1px solid rgba(192,57,43,0.2); padding: 0.28rem 1.25rem; font-size: 0.68rem; font-weight: 700; color: var(--red); letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem; }
+
+        .card-inner { padding: 1rem 1.25rem; }
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; }
+        .card-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+        .status-badge { font-family: var(--mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.06em; padding: 0.18rem 0.5rem; border-radius: 3px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; user-select: none; border: 1px solid transparent; }
+        .status-badge:hover { opacity: 0.75; }
+        .badge-pending   { background: var(--yellow-bg); color: var(--yellow); border-color: #d4b800; }
+        .badge-fixing    { background: var(--orange-bg); color: var(--orange); border-color: #c06a10; }
+        .badge-completed { background: var(--green-bg);  color: var(--green);  border-color: #3a9a5c; }
+
+        .category-tag { font-size: 0.62rem; padding: 0.18rem 0.5rem; border-radius: 3px; background: var(--accent-light); color: var(--accent); border: 1px solid #c0d4ef; }
+        .source-tag { font-size: 0.62rem; padding: 0.18rem 0.5rem; border-radius: 3px; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }
+
+        .card-actions { display: flex; gap: 0.35rem; align-items: center; flex-shrink: 0; }
+        .card-btn { width: 28px; height: 28px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; display: grid; place-items: center; font-size: 0.7rem; transition: all 0.15s; }
+        .card-btn:hover { background: var(--bg-base); color: var(--text-secondary); border-color: var(--border-mid); }
+        .card-btn.del:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+        .card-body { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem 1rem; margin-bottom: 0.75rem; }
+        @media (max-width: 600px) { .card-body { grid-template-columns: 1fr 1fr; } }
+        .card-field-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+        .card-field-value { font-size: 0.82rem; color: var(--text-primary); }
+
+        .card-collapsible { overflow: hidden; transition: max-height 0.3s ease; }
+
+        .card-desc-block { margin-bottom: 0.6rem; }
+        .card-desc-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+        .card-desc { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.8rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65; }
+
+        .notes-section { margin-top: 0.6rem; border-top: 1px dashed var(--border); padding-top: 0.65rem; }
+        .notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
+        .notes-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+        .btn-edit-notes { font-size: 0.65rem; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 0.3rem; transition: opacity 0.15s; }
+        .btn-edit-notes:hover { opacity: 0.7; }
+        .notes-display { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65; min-height: 1.2em; }
+        .notes-display.empty { color: var(--text-muted); font-style: italic; }
+        .notes-editor { display: none; }
+        .notes-editor.open { display: block; }
+        .notes-textarea { width: 100%; background: var(--bg-input); border: 1px solid var(--accent); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--sans); font-size: 0.8rem; padding: 0.5rem 0.75rem; resize: vertical; min-height: 70px; outline: none; line-height: 1.65; box-shadow: 0 0 0 3px rgba(42,95,165,0.1); }
+        .notes-actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; justify-content: flex-end; }
+        .btn-save-notes, .btn-cancel-notes { font-size: 0.72rem; padding: 0.3rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid; cursor: pointer; transition: all 0.15s; font-family: var(--sans); }
+        .btn-save-notes { background: var(--accent); color: white; border-color: var(--accent); }
+        .btn-save-notes:hover { background: var(--accent-hover); }
+        .btn-cancel-notes { background: transparent; color: var(--text-muted); border-color: var(--border-mid); }
+        .btn-cancel-notes:hover { color: var(--text-secondary); border-color: var(--border-dark); }
+
+        .completion-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
+        .completion-date-wrap { display: flex; align-items: center; gap: 0.4rem; }
+        .completion-date-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+        .completion-date-input { font-family: var(--mono); font-size: 0.72rem; color: var(--text-secondary); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.2rem 0.5rem; outline: none; transition: border-color 0.15s; }
+        .completion-date-input:focus { border-color: var(--accent); }
+
+        .card-footer { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .card-id { font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted); }
+        .card-collapse-hint { font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; cursor: pointer; transition: color 0.15s; user-select: none; }
+        .card-collapse-hint:hover { color: var(--accent); }
+
+        /* EMPTY */
+        .empty-state { background: var(--bg-panel); border: 2px dashed var(--border-mid); border-radius: var(--radius-lg); padding: 4rem 2rem; text-align: center; }
+        .empty-icon { font-size: 2.5rem; color: var(--border-dark); margin-bottom: 0.875rem; display: block; }
+        .empty-text { color: var(--text-muted); font-size: 0.875rem; }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(30,28,24,0.4); z-index: 200; backdrop-filter: blur(3px); align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; width: 100%; max-width: 380px; box-shadow: var(--shadow-md); animation: modalIn 0.18s ease-out; }
+        @keyframes modalIn { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
+        .modal h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .modal p { font-size: 0.825rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.65; }
+        .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+        .btn-cancel { background: var(--bg-input); border: 1px solid var(--border-mid); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: var(--sans); font-size: 0.8rem; padding: 0.5rem 1rem; cursor: pointer; transition: all 0.15s; }
+        .btn-cancel:hover { border-color: var(--border-dark); }
+        .btn-confirm { background: var(--red); border: none; border-radius: var(--radius-sm); color: white; font-family: var(--sans); font-size: 0.8rem; font-weight: 700; padding: 0.5rem 1rem; cursor: pointer; transition: opacity 0.15s; }
+        .btn-confirm:hover { opacity: 0.85; }
+
+        /* TOAST */
+        .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+        .toast { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.7rem 1rem; font-size: 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.6rem; box-shadow: var(--shadow-md); animation: toastIn 0.25s ease-out forwards; max-width: 280px; }
+        .toast.out { animation: toastOut 0.25s ease-in forwards; }
+        @keyframes toastIn  { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toastOut { from { opacity:1; transform:translateY(0); }  to { opacity:0; transform:translateY(8px); } }
+        .toast-icon { font-size: 0.85rem; }
+        .toast.success .toast-icon { color: var(--green); }
+        .toast.error   .toast-icon { color: var(--red); }
+        .toast.info    .toast-icon { color: var(--accent); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-dark); }
+    </style>
+</head>
+<body>
+
+<nav class="topbar">
+    <div class="topbar-brand">
+        <div class="topbar-logo"><i class="fas fa-wrench"></i></div>
+        <div>
+            <div class="topbar-name">大湖農工 <span>設備組維修紀錄</span></div>
+            <div class="topbar-sub">EQUIPMENT MAINTENANCE LOG · v4.0</div>
+        </div>
+    </div>
+    <div class="topbar-clock" id="clock">--:--:--</div>
+</nav>
+
+<div class="main-layout">
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon total"><i class="fas fa-clipboard-list"></i></div>
+            <div><div class="stat-num" id="stat-total">0</div><div class="stat-label">全部紀錄</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon pending"><i class="fas fa-clock"></i></div>
+            <div><div class="stat-num" id="stat-pending">0</div><div class="stat-label">待處理</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon fixing"><i class="fas fa-screwdriver-wrench"></i></div>
+            <div><div class="stat-num" id="stat-fixing">0</div><div class="stat-label">處理中</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon done"><i class="fas fa-circle-check"></i></div>
+            <div><div class="stat-num" id="stat-done">0</div><div class="stat-label">已完成</div></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon month"><i class="fas fa-calendar-check"></i></div>
+            <div><div class="stat-num" id="stat-month">0</div><div class="stat-label">本月完成</div></div>
+        </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="analytics-row">
+        <div class="analytics-header">
+            <div class="analytics-title"><i class="fas fa-chart-bar"></i>各分類損壞次數</div>
+            <div class="analytics-year-label" id="analyticsLabel"></div>
+        </div>
+        <div class="chart-wrap" id="chartWrap">
+            <div class="chart-empty">尚無紀錄資料</div>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="panel">
+        <div class="panel-header">
+            <i class="fas fa-plus-circle panel-header-icon"></i>
+            <h2>新增維修紀錄</h2>
+        </div>
+        <form id="repairForm" novalidate>
+            <div class="field-row">
+                <div class="field">
+                    <label>地點<span class="required">*</span></label>
+                    <input type="text" id="location" maxlength="40">
+                </div>
+                <div class="field">
+                    <label>設備分類<span class="required">*</span></label>
+                    <select id="category">
+                        <option value="">選擇分類</option>
+                        <option>桌機／主機</option>
+                        <option>筆電／平板</option>
+                        <option>螢幕／顯示器</option>
+                        <option>鍵盤／滑鼠／週邊</option>
+                        <option>投影機／電子白板</option>
+                        <option>網路／交換器</option>
+                        <option>印表機／掃描器</option>
+                        <option>其他硬體</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>設備名稱<span class="required">*</span></label>
+                <input type="text" id="equipment" maxlength="50">
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label>回報來源</label>
+                    <select id="source">
+                        <option>老師反映</option>
+                        <option>自行發現</option>
+                        <option>定期巡檢</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>緊急程度</label>
+                    <div class="urgency-row">
+                        <div class="urgency-opt">
+                            <input type="radio" name="urgency" id="u-normal" value="normal" checked>
+                            <label for="u-normal" class="normal-label"><i class="fas fa-minus"></i> 一般</label>
+                        </div>
+                        <div class="urgency-opt">
+                            <input type="radio" name="urgency" id="u-urgent" value="urgent">
+                            <label for="u-urgent" class="urgent-label"><i class="fas fa-bolt"></i> 緊急</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>損壞狀況<span class="required">*</span></label>
+                <textarea id="description" placeholder="損壞情形、發現時間、影響範圍等…" maxlength="300"></textarea>
+                <div class="char-counter" id="descCounter">0 / 300</div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-plus"></i> 新增紀錄
+            </button>
+        </form>
+    </div>
+
+    <!-- LIST -->
+    <div class="right-col">
+        <div class="list-header">
+            <h2><i class="fas fa-list-ul" style="color:var(--accent)"></i>維修紀錄</h2>
+            <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="搜尋…">
+                </div>
+                <button class="btn-export" onclick="exportCSV()">
+                    <i class="fas fa-file-csv"></i> 匯出 CSV
+                </button>
+            </div>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">全部</button>
+            <button class="filter-tab" data-filter="pending">待處理</button>
+            <button class="filter-tab" data-filter="fixing">處理中</button>
+            <button class="filter-tab" data-filter="completed">已完成</button>
+            <button class="filter-tab urgent-tab" data-filter="urgent">⚡ 緊急</button>
+        </div>
+
+        <div class="repair-list" id="repairList"></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <h3><i class="fas fa-triangle-exclamation" style="color:var(--red);margin-right:0.4rem"></i>確認刪除</h3>
+        <p>這筆維修紀錄將被永久刪除，此動作無法復原。<br>確定要繼續嗎？</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">取消</button>
+            <button class="btn-confirm" id="confirmDeleteBtn">確認刪除</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const STORAGE_KEY = 'dahu_repairs_v4';
+let repairs = [], currentFilter = 'all', searchQuery = '', pendingDeleteId = null;
+const collapsedSet = new Set();
+
+function loadData() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) { repairs = JSON.parse(raw); return; }
+        for (const k of ['dahu_repairs_v3','dahu_repairs_v2']) {
+            const old = localStorage.getItem(k);
+            if (old) {
+                repairs = JSON.parse(old).map(r => ({
+                    ...r, notes: r.notes||'', completedAt: r.completedAt||'',
+                    source: r.source||'老師反映', urgent: r.urgent||false
+                }));
+                saveData(); break;
+            }
+        }
+    } catch(e) { repairs = []; }
+}
+function saveData() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(repairs)); }
+    catch(e) { showToast('儲存失敗','error'); }
+}
+
+const STATUS = {
+    pending:   { label:'待處理', badge:'badge-pending',   next:'fixing'    },
+    fixing:    { label:'處理中', badge:'badge-fixing',    next:'completed' },
+    completed: { label:'已完成', badge:'badge-completed', next:'pending'   },
+};
+const CATS = ['桌機／主機','筆電／平板','螢幕／顯示器','鍵盤／滑鼠／週邊','投影機／電子白板','網路／交換器','印表機／掃描器','其他硬體'];
+const CATS_SHORT = {'桌機／主機':'桌機','筆電／平板':'筆電','螢幕／顯示器':'螢幕','鍵盤／滑鼠／週邊':'週邊','投影機／電子白板':'投影機','網路／交換器':'網路','印表機／掃描器':'印表機','其他硬體':'其他'};
+
+function esc(s) { if(!s) return ''; const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
+function genId() {
+    const n=new Date(), yy=String(n.getFullYear()).slice(2), mm=String(n.getMonth()+1).padStart(2,'0'), dd=String(n.getDate()).padStart(2,'0');
+    return `RPR-${yy}${mm}${dd}-${String(Date.now()).slice(-4)}`;
+}
+function fmtDate(iso) {
+    if(!iso) return '—';
+    return new Date(iso).toLocaleString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+}
+
+function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('zh-TW',{hour12:false}); }
+setInterval(updateClock,1000); updateClock();
+
+function updateStats() {
+    const now=new Date(), ym=now.getFullYear()*100+now.getMonth();
+    const monthDone=repairs.filter(r=>{
+        if(r.status!=='completed'||!r.completedAt) return false;
+        const d=new Date(r.completedAt); return d.getFullYear()*100+d.getMonth()===ym;
+    }).length;
+    document.getElementById('stat-total').textContent   = repairs.length;
+    document.getElementById('stat-pending').textContent  = repairs.filter(r=>r.status==='pending').length;
+    document.getElementById('stat-fixing').textContent   = repairs.filter(r=>r.status==='fixing').length;
+    document.getElementById('stat-done').textContent     = repairs.filter(r=>r.status==='completed').length;
+    document.getElementById('stat-month').textContent    = monthDone;
+}
+
+function renderChart() {
+    document.getElementById('analyticsLabel').textContent = new Date().getFullYear()+' 年累計';
+    const wrap = document.getElementById('chartWrap');
+    if (!repairs.length) { wrap.innerHTML='<div class="chart-empty">尚無紀錄資料</div>'; return; }
+    const counts={}, urgCounts={};
+    CATS.forEach(c=>{ counts[c]=0; urgCounts[c]=0; });
+    repairs.forEach(r=>{ if(r.category && counts[r.category]!==undefined){ counts[r.category]++; if(r.urgent) urgCounts[r.category]++; } });
+    const max=Math.max(...Object.values(counts),1);
+    wrap.innerHTML=CATS.map(cat=>{
+        const n=counts[cat], pct=Math.round(n/max*100), hasUrg=urgCounts[cat]>0;
+        const tip=`${cat}：${n} 件${hasUrg?`（含緊急 ${urgCounts[cat]} 件）`:''}`;
+        return `<div class="chart-bar-group" title="${esc(tip)}">
+            <div class="chart-bar-num">${n||''}</div>
+            <div class="chart-bar-outer">
+                <div class="chart-bar-inner${hasUrg?' has-urgent':''}" style="height:${pct}%"></div>
+            </div>
+            <div class="chart-bar-label">${esc(CATS_SHORT[cat]||cat)}</div>
+        </div>`;
+    }).join('');
+}
+
+function getFiltered() {
+    return repairs.filter(r=>{
+        if(currentFilter==='urgent') return r.urgent;
+        const okS=currentFilter==='all'||r.status===currentFilter;
+        const q=searchQuery.toLowerCase();
+        const okQ=!q||[r.location,r.equipment,r.description,r.category,r.source,r.notes].some(v=>v&&v.toLowerCase().includes(q));
+        return okS&&okQ;
+    });
+}
+
+function renderRepairs() {
+    updateStats(); renderChart();
+    const list=document.getElementById('repairList'), filtered=getFiltered();
+    if(!filtered.length){
+        list.innerHTML=`<div class="empty-state"><i class="fas fa-clipboard-check empty-icon"></i><p class="empty-text">${repairs.length===0?'目前沒有維修紀錄':'沒有符合條件的紀錄'}</p></div>`;
+        return;
+    }
+    list.innerHTML=filtered.map((item,idx)=>{
+        const s=STATUS[item.status]||STATUS.pending;
+        const delay=Math.min(idx*35,280);
+        const notesEmpty=!item.notes||!item.notes.trim();
+        const isDone=item.status==='completed';
+        const isCollapsed=isDone&&collapsedSet.has(item.id);
+        return `
+        <div class="repair-card status-${esc(item.status)}${item.urgent?' is-urgent':''}" style="animation-delay:${delay}ms" id="card-${item.id}">
+            ${item.urgent?`<div class="urgent-banner"><i class="fas fa-bolt"></i> 緊急</div>`:''}
+            <div class="card-inner">
+                <div class="card-top">
+                    <div class="card-meta">
+                        <span class="status-badge ${s.badge}" onclick="cycleStatus('${item.id}')" title="點擊切換狀態">${esc(s.label)}</span>
+                        <span class="category-tag">${esc(item.category||'未分類')}</span>
+                        <span class="source-tag">${esc(item.source||'—')}</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-btn del" onclick="requestDelete('${item.id}')" title="刪除"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="card-field"><div class="card-field-label">地點</div><div class="card-field-value">${esc(item.location)}</div></div>
+                    <div class="card-field"><div class="card-field-label">設備</div><div class="card-field-value">${esc(item.equipment)}</div></div>
+                    <div class="card-field"><div class="card-field-label">登錄時間</div><div class="card-field-value" style="font-size:0.75rem;color:var(--text-secondary)">${fmtDate(item.createdAt)}</div></div>
+                </div>
+
+                <div class="card-collapsible" id="col-${item.id}" style="max-height:${isCollapsed?'0':'600px'}">
+                    <div class="card-desc-block">
+                        <div class="card-desc-label">損壞狀況</div>
+                        <div class="card-desc">${esc(item.description)}</div>
+                    </div>
+                    <div class="notes-section">
+                        <div class="notes-header">
+                            <span class="notes-label"><i class="fas fa-pen-to-square" style="margin-right:0.3rem;font-size:0.58rem"></i>處理備註</span>
+                            <button class="btn-edit-notes" onclick="openNotes('${item.id}')"><i class="fas fa-pencil"></i> 編輯</button>
+                        </div>
+                        <div class="notes-display${notesEmpty?' empty':''}" id="nd-${item.id}">${notesEmpty?'尚無備註':esc(item.notes)}</div>
+                        <div class="notes-editor" id="ne-${item.id}">
+                            <textarea class="notes-textarea" id="nt-${item.id}" placeholder="維修過程、更換零件、外送廠商等記錄…" maxlength="500">${esc(item.notes||'')}</textarea>
+                            <div class="notes-actions">
+                                <button class="btn-cancel-notes" onclick="closeNotes('${item.id}')">取消</button>
+                                <button class="btn-save-notes" onclick="saveNotes('${item.id}')">儲存</button>
+                            </div>
+                        </div>
+                        ${isDone?`<div class="completion-row"><div class="completion-date-wrap"><span class="completion-date-label">完成日期</span><input type="date" class="completion-date-input" value="${esc(item.completedAt||'')}" onchange="saveDate('${item.id}',this.value)"></div></div>`:''}
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-id"># ${esc(item.id)}</span>
+                        ${isDone?`<span class="card-collapse-hint" onclick="toggleCollapse('${item.id}')"><i class="fas fa-chevron-${isCollapsed?'down':'up'}"></i>${isCollapsed?'展開':'折疊'}</span>`:''}
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function toggleCollapse(id) {
+    const el=document.getElementById(`col-${id}`);
+    if(collapsedSet.has(id)){ collapsedSet.delete(id); el.style.maxHeight='600px'; }
+    else { collapsedSet.add(id); el.style.maxHeight='0'; }
+    // re-render just the hint text without full render
+    const hint=document.querySelector(`#card-${id} .card-collapse-hint`);
+    if(hint) hint.innerHTML=`<i class="fas fa-chevron-${collapsedSet.has(id)?'down':'up'}"></i>${collapsedSet.has(id)?'展開':'折疊'}`;
+}
+
+function openNotes(id)  { document.getElementById(`ne-${id}`).classList.add('open'); document.getElementById(`nt-${id}`).focus(); }
+function closeNotes(id) { document.getElementById(`ne-${id}`).classList.remove('open'); }
+function saveNotes(id) {
+    const item=repairs.find(r=>r.id===id); if(!item) return;
+    const val=document.getElementById(`nt-${id}`).value;
+    item.notes=val; saveData();
+    const d=document.getElementById(`nd-${id}`), empty=!val||!val.trim();
+    d.className='notes-display'+(empty?' empty':''); d.textContent=empty?'尚無備註':val;
+    closeNotes(id); showToast('備註已儲存','success');
+}
+function saveDate(id,v) {
+    const item=repairs.find(r=>r.id===id); if(!item) return;
+    item.completedAt=v; saveData(); updateStats(); showToast('完成日期已更新','success');
+}
+function cycleStatus(id) {
+    const item=repairs.find(r=>r.id===id); if(!item) return;
+    item.status=STATUS[item.status]?.next||'pending';
+    if(item.status==='completed'&&!item.completedAt) item.completedAt=new Date().toISOString().split('T')[0];
+    saveData(); renderRepairs(); showToast(`狀態更新為「${STATUS[item.status].label}」`,'success');
+}
+function requestDelete(id) { pendingDeleteId=id; document.getElementById('deleteModal').classList.add('open'); }
+function closeModal() { document.getElementById('deleteModal').classList.remove('open'); pendingDeleteId=null; }
+
+document.getElementById('confirmDeleteBtn').addEventListener('click',()=>{
+    if(!pendingDeleteId) return;
+    repairs=repairs.filter(r=>r.id!==pendingDeleteId);
+    collapsedSet.delete(pendingDeleteId);
+    saveData(); renderRepairs(); closeModal(); showToast('維修紀錄已刪除','info');
+});
+document.getElementById('deleteModal').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
+
+const descTA=document.getElementById('description'), descCounter=document.getElementById('descCounter');
+descTA.addEventListener('input',()=>{
+    const l=descTA.value.length; descCounter.textContent=`${l} / 300`;
+    descCounter.className='char-counter'+(l>270?(l>=300?' over':' warn'):'');
+});
+
+document.getElementById('repairForm').addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&e.target.tagName!=='TEXTAREA'&&e.target.tagName!=='SELECT') { e.preventDefault(); document.getElementById('repairForm').requestSubmit(); }
+});
+
+document.getElementById('repairForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const location=document.getElementById('location').value.trim();
+    const category=document.getElementById('category').value;
+    const equipment=document.getElementById('equipment').value.trim();
+    const source=document.getElementById('source').value;
+    const urgent=document.querySelector('input[name="urgency"]:checked').value==='urgent';
+    const description=descTA.value.trim();
+    if(!location||!category||!equipment||!description){ showToast('請填寫所有必填欄位','error'); return; }
+    repairs.unshift({ id:genId(), location,category,equipment,source,urgent,description, status:'pending',notes:'',completedAt:'',createdAt:new Date().toISOString() });
+    saveData(); renderRepairs(); e.target.reset();
+    document.getElementById('u-normal').checked=true;
+    descCounter.textContent='0 / 300'; descCounter.className='char-counter';
+    showToast(urgent?'⚡ 緊急紀錄已新增':'維修紀錄已新增','success');
+});
+
+document.querySelectorAll('.filter-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active'); currentFilter=btn.dataset.filter; renderRepairs();
+    });
+});
+document.getElementById('searchInput').addEventListener('input',e=>{ searchQuery=e.target.value; renderRepairs(); });
+
+function exportCSV() {
+    if(!repairs.length){ showToast('沒有資料可以匯出','info'); return; }
+    const h=['維修編號','地點','分類','設備','回報來源','緊急','狀態','損壞狀況','處理備註','登錄日期','完成日期'];
+    const rows=repairs.map(r=>[
+        r.id,r.location,r.category,r.equipment,r.source||'',r.urgent?'是':'否',
+        STATUS[r.status]?.label||r.status,r.description,r.notes||'',fmtDate(r.createdAt),r.completedAt||''
+    ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+    const csv='\uFEFF'+[h.join(','),...rows].join('\n');
+    const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})),download:`設備組維修紀錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`});
+    a.click(); showToast('CSV 已匯出','success');
+}
+
+const ICONS={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info'};
+function showToast(msg,type='info'){
+    const c=document.getElementById('toastContainer'), el=document.createElement('div');
+    el.className=`toast ${type}`; el.innerHTML=`<i class="fas ${ICONS[type]} toast-icon"></i><span>${esc(msg)}</span>`;
+    c.appendChild(el); setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),250); },2800);
+}
+
+loadData(); renderRepairs();
+</script>
+</body>
+</html>
