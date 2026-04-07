@@ -16,10 +16,10 @@
             --border:         #ddd9d0;
             --border-mid:     #c8c3b8;
             --border-dark:    #a89f90;
-            --text-primary:   #1e1c18;
-            --text-secondary: #4a4640;
-            --text-muted:     #8c867c;
-            --text-label:     #6b6560;
+            --text-primary:   #1a1814;
+            --text-secondary: #38342f;
+            --text-muted:     #6b6460;
+            --text-label:     #4a4540;
             --accent:         #2a5fa5;
             --accent-light:   #e8eff9;
             --accent-hover:   #1e4d8c;
@@ -69,7 +69,7 @@
         .stat-icon.done    { background: var(--green-bg);     color: var(--green);  }
         .stat-icon.month   { background: var(--purple-bg);    color: var(--purple); }
         .stat-num { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; line-height: 1; }
-        .stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.04em; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.04em; }
 
         /* ANALYTICS */
         .analytics-row { grid-column: 1 / -1; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; box-shadow: var(--shadow-sm); }
@@ -82,8 +82,8 @@
         .chart-bar-outer { width: 100%; background: var(--bg-input); border-radius: 3px 3px 0 0; height: 80px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .chart-bar-inner { width: 100%; position: absolute; bottom: 0; background: var(--accent); border-radius: 2px 2px 0 0; transition: height 0.5s ease; }
         .chart-bar-inner.has-urgent { background: linear-gradient(to top, var(--red) 0%, var(--accent) 100%); }
-        .chart-bar-num { font-family: var(--mono); font-size: 0.65rem; color: var(--text-secondary); font-weight: 500; min-height: 1em; }
-        .chart-bar-label { font-size: 0.6rem; color: var(--text-muted); text-align: center; line-height: 1.3; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .chart-bar-num { font-family: var(--mono); font-size: 0.68rem; color: var(--text-secondary); font-weight: 500; min-height: 1em; }
+        .chart-bar-label { font-size: 0.65rem; color: var(--text-muted); text-align: center; line-height: 1.3; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .chart-empty { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 2rem 0; }
 
         /* PANEL */
@@ -94,7 +94,7 @@
 
         /* FORM */
         .field { margin-bottom: 0.875rem; }
-        .field label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-label); margin-bottom: 0.35rem; }
+        .field label { display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-label); margin-bottom: 0.35rem; }
         .field label .required { color: var(--red); margin-left: 2px; }
         .field input, .field select, .field textarea { width: 100%; background: var(--bg-input); border: 1px solid var(--border-mid); border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--sans); font-size: 0.875rem; padding: 0.55rem 0.8rem; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; outline: none; }
         .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); background: var(--bg-input-focus); box-shadow: 0 0 0 3px rgba(42,95,165,0.1); }
@@ -152,14 +152,14 @@
         .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; }
         .card-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
-        .status-badge { font-family: var(--mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.06em; padding: 0.18rem 0.5rem; border-radius: 3px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; user-select: none; border: 1px solid transparent; }
+        .status-badge { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; padding: 0.2rem 0.55rem; border-radius: 3px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; user-select: none; border: 1px solid transparent; }
         .status-badge:hover { opacity: 0.75; }
         .badge-pending   { background: var(--yellow-bg); color: var(--yellow); border-color: #d4b800; }
         .badge-fixing    { background: var(--orange-bg); color: var(--orange); border-color: #c06a10; }
         .badge-completed { background: var(--green-bg);  color: var(--green);  border-color: #3a9a5c; }
 
-        .category-tag { font-size: 0.62rem; padding: 0.18rem 0.5rem; border-radius: 3px; background: var(--accent-light); color: var(--accent); border: 1px solid #c0d4ef; }
-        .source-tag { font-size: 0.62rem; padding: 0.18rem 0.5rem; border-radius: 3px; background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }
+        .category-tag { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 3px; background: var(--accent-light); color: var(--accent); border: 1px solid #c0d4ef; }
+        .source-tag { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 3px; background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border); }
 
         .card-actions { display: flex; gap: 0.35rem; align-items: center; flex-shrink: 0; }
         .card-btn { width: 28px; height: 28px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; display: grid; place-items: center; font-size: 0.7rem; transition: all 0.15s; }
@@ -168,21 +168,21 @@
 
         .card-body { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem 1rem; margin-bottom: 0.75rem; }
         @media (max-width: 600px) { .card-body { grid-template-columns: 1fr 1fr; } }
-        .card-field-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
-        .card-field-value { font-size: 0.82rem; color: var(--text-primary); }
+        .card-field-label { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+        .card-field-value { font-size: 0.875rem; color: var(--text-primary); }
 
         .card-collapsible { overflow: hidden; transition: max-height 0.3s ease; }
 
         .card-desc-block { margin-bottom: 0.6rem; }
-        .card-desc-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
-        .card-desc { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.8rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65; }
+        .card-desc-label { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+        .card-desc { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.55rem 0.8rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
 
         .notes-section { margin-top: 0.6rem; border-top: 1px dashed var(--border); padding-top: 0.65rem; }
         .notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
-        .notes-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
-        .btn-edit-notes { font-size: 0.65rem; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 0.3rem; transition: opacity 0.15s; }
+        .notes-label { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+        .btn-edit-notes { font-size: 0.7rem; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 0.3rem; transition: opacity 0.15s; }
         .btn-edit-notes:hover { opacity: 0.7; }
-        .notes-display { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65; min-height: 1.2em; }
+        .notes-display { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; min-height: 1.2em; }
         .notes-display.empty { color: var(--text-muted); font-style: italic; }
         .notes-editor { display: none; }
         .notes-editor.open { display: block; }
@@ -196,13 +196,13 @@
 
         .completion-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
         .completion-date-wrap { display: flex; align-items: center; gap: 0.4rem; }
-        .completion-date-label { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
-        .completion-date-input { font-family: var(--mono); font-size: 0.72rem; color: var(--text-secondary); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.2rem 0.5rem; outline: none; transition: border-color 0.15s; }
+        .completion-date-label { font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+        .completion-date-input { font-family: var(--mono); font-size: 0.75rem; color: var(--text-secondary); background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.2rem 0.5rem; outline: none; transition: border-color 0.15s; }
         .completion-date-input:focus { border-color: var(--accent); }
 
         .card-footer { margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-        .card-id { font-family: var(--mono); font-size: 0.6rem; color: var(--text-muted); }
-        .card-collapse-hint { font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; cursor: pointer; transition: color 0.15s; user-select: none; }
+        .card-id { font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted); }
+        .card-collapse-hint { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; cursor: pointer; transition: color 0.15s; user-select: none; }
         .card-collapse-hint:hover { color: var(--accent); }
 
         /* EMPTY */
@@ -521,7 +521,7 @@ function renderRepairs() {
                 <div class="card-body">
                     <div class="card-field"><div class="card-field-label">地點</div><div class="card-field-value">${esc(item.location)}</div></div>
                     <div class="card-field"><div class="card-field-label">設備</div><div class="card-field-value">${esc(item.equipment)}</div></div>
-                    <div class="card-field"><div class="card-field-label">登錄時間</div><div class="card-field-value" style="font-size:0.75rem;color:var(--text-secondary)">${fmtDate(item.createdAt)}</div></div>
+                    <div class="card-field"><div class="card-field-label">登錄時間</div><div class="card-field-value" style="font-size:0.8rem;color:var(--text-secondary)">${fmtDate(item.createdAt)}</div></div>
                 </div>
 
                 <div class="card-collapsible" id="col-${item.id}" style="max-height:${isCollapsed?'0':'600px'}">
