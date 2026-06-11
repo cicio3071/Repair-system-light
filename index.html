@@ -44,17 +44,20 @@
         body { font-family: var(--sans); background: var(--bg-base); color: var(--text-primary); min-height: 100vh; font-size: 14px; line-height: 1.6; }
 
         /* TOPBAR */
-        .topbar { background: var(--bg-panel); border-bottom: 2px solid var(--accent); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
-        .topbar-brand { display: flex; align-items: center; gap: 0.875rem; }
+        .topbar { background: var(--bg-panel); border-bottom: 2px solid var(--accent); padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); overflow: hidden; }
+        .topbar-brand { display: flex; align-items: center; gap: 0.875rem; min-width: 0; flex: 1; }
         .topbar-logo { width: 34px; height: 34px; background: var(--accent); border-radius: var(--radius-sm); display: grid; place-items: center; color: white; font-size: 14px; flex-shrink: 0; }
-        .topbar-name { font-family: var(--serif); font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; }
+        .topbar-text { min-width: 0; overflow: hidden; }
+        .topbar-name { font-family: var(--serif); font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .topbar-name span { color: var(--accent); }
-        .topbar-sub { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.06em; margin-top: 1px; }
-        .topbar-clock { font-family: var(--mono); font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-input); padding: 0.3rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border); letter-spacing: 0.05em; }
+        .topbar-sub { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.06em; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .topbar-clock { font-family: var(--mono); font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-input); padding: 0.3rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border); letter-spacing: 0.05em; flex-shrink: 0; white-space: nowrap; }
+        @media (max-width: 480px) { .topbar { padding: 0 1rem; } .topbar-sub { display: none; } .topbar-clock { font-size: 0.72rem; padding: 0.25rem 0.5rem; } }
 
         /* LAYOUT */
         .main-layout { max-width: 1300px; margin: 0 auto; padding: 1.75rem 1.5rem; display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start; }
         @media (max-width: 960px) { .main-layout { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .main-layout { padding: 1rem 0.75rem; gap: 1rem; } }
 
         /* STATS */
         .stats-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
@@ -88,6 +91,7 @@
 
         /* PANEL */
         .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); position: sticky; top: 72px; }
+        @media (max-width: 960px) { .panel { position: static; } }
         .panel-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.25rem; padding-bottom: 0.875rem; border-bottom: 1px solid var(--border); }
         .panel-header-icon { color: var(--accent); font-size: 0.875rem; }
         .panel-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); }
@@ -121,7 +125,8 @@
         /* RIGHT COL */
         .right-col { min-width: 0; }
         .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.875rem; gap: 0.75rem; flex-wrap: wrap; }
-        .list-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; }
+        .list-header h2 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+        .list-header-right { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; flex-shrink: 0; }
         .filter-tabs { display: flex; gap: 0.35rem; margin-bottom: 0.875rem; flex-wrap: wrap; }
         .filter-tab { font-family: var(--mono); font-size: 0.68rem; padding: 0.28rem 0.65rem; border-radius: 99px; border: 1px solid var(--border-mid); background: var(--bg-panel); color: var(--text-muted); cursor: pointer; transition: all 0.15s; letter-spacing: 0.03em; }
         .filter-tab:hover { background: var(--bg-base); color: var(--text-secondary); }
@@ -130,9 +135,10 @@
 
         .search-wrap { position: relative; }
         .search-wrap i { position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.72rem; pointer-events: none; }
-        .search-wrap input { background: var(--bg-panel); border: 1px solid var(--border-mid); border-radius: 99px; color: var(--text-primary); font-family: var(--sans); font-size: 0.8rem; padding: 0.38rem 0.75rem 0.38rem 1.9rem; outline: none; width: 180px; transition: border-color 0.15s, box-shadow 0.15s; }
-        .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,95,165,0.1); }
+        .search-wrap input { background: var(--bg-panel); border: 1px solid var(--border-mid); border-radius: 99px; color: var(--text-primary); font-family: var(--sans); font-size: 0.8rem; padding: 0.38rem 0.75rem 0.38rem 1.9rem; outline: none; width: 160px; max-width: 100%; transition: border-color 0.15s, box-shadow 0.15s; }
+        .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,95,165,0.1); width: 200px; }
         .search-wrap input::placeholder { color: var(--text-muted); }
+        @media (max-width: 480px) { .search-wrap input { width: 120px; } .search-wrap input:focus { width: 150px; } }
         .btn-export { background: var(--bg-panel); border: 1px solid var(--border-mid); border-radius: 99px; color: var(--text-secondary); font-size: 0.75rem; padding: 0.38rem 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.15s; white-space: nowrap; }
         .btn-export:hover { border-color: var(--green); color: var(--green); background: var(--green-bg); }
 
@@ -149,8 +155,8 @@
         .urgent-banner { background: var(--red-bg); border-bottom: 1px solid rgba(192,57,43,0.2); padding: 0.28rem 1.25rem; font-size: 0.68rem; font-weight: 700; color: var(--red); letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem; }
 
         .card-inner { padding: 1rem 1.25rem; }
-        .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; }
-        .card-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; gap: 0.5rem; }
+        .card-meta { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; min-width: 0; flex: 1; }
 
         .status-badge { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; padding: 0.2rem 0.55rem; border-radius: 3px; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; user-select: none; border: 1px solid transparent; }
         .status-badge:hover { opacity: 0.75; }
@@ -245,7 +251,7 @@
 <nav class="topbar">
     <div class="topbar-brand">
         <div class="topbar-logo"><i class="fas fa-wrench"></i></div>
-        <div>
+        <div class="topbar-text">
             <div class="topbar-name">大湖農工 <span>設備組維修紀錄</span></div>
             <div class="topbar-sub">EQUIPMENT MAINTENANCE LOG · v4.0</div>
         </div>
@@ -363,7 +369,7 @@
     <div class="right-col">
         <div class="list-header">
             <h2><i class="fas fa-list-ul" style="color:var(--accent)"></i>維修紀錄</h2>
-            <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+            <div class="list-header-right">
                 <div class="search-wrap">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="搜尋…">
